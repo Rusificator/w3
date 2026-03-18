@@ -20,7 +20,7 @@ $allowed_languages = [
 ];
 
 // Массив допустимых значений пола
-$allowed_genders = ['male', 'female', 'other'];
+$allowed_genders = ['male', 'female'];
 
 // Инициализация переменных для данных формы и ошибок
 $form_data = [
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['full_name'] = 'ФИО обязательно для заполнения.';
     } elseif (!preg_match('/^[а-яА-Яa-zA-Z\s\-]+$/u', $form_data['full_name'])) {
         $errors['full_name'] = 'ФИО может содержать только буквы, пробелы и дефисы.';
-    } elseif (mb_strlen($form_data['full_name']) > 150) {
+    } elseif (strlen($form_data['full_name']) > 150) {
         $errors['full_name'] = 'ФИО не должно превышать 150 символов.';
     }
 
@@ -236,7 +236,7 @@ if (empty($languages_from_db)) {
                 <div class="radio-group">
                     <label><input type="radio" name="gender" value="male" <?= $form_data['gender'] === 'male' ? 'checked' : '' ?> required> Мужской</label>
                     <label><input type="radio" name="gender" value="female" <?= $form_data['gender'] === 'female' ? 'checked' : '' ?>> Женский</label>
-                    <label><input type="radio" name="gender" value="other" <?= $form_data['gender'] === 'other' ? 'checked' : '' ?>> Другое</label>
+                    
                 </div>
                 <?php if (isset($errors['gender'])): ?><span class="field-error"><?= $errors['gender'] ?></span><?php endif; ?>
             </div>
