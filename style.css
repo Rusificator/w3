@@ -9,7 +9,7 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1800px; /* увеличено с 1200px до 1800px */
     margin: 0 auto;
     background-color: #fff;
     padding: 30px;
@@ -116,11 +116,12 @@ h2 {
     display: block;
 }
 
-/* Стили для блоков заданий (как в предыдущих лабораторных) */
+/* Стили для блоков заданий (подготовительный раздел) */
 .task {
+    margin-top: 40px; /* добавляем отступ сверху, чтобы отделить от формы */
     margin-bottom: 40px;
     padding: 20px;
-    background-color: #fcfcfc;
+    background-color: #f8f9fa; /* светло-серый фон, чтобы визуально отличался */
     border: 1px solid #e0e0e0;
     border-radius: 5px;
 }
@@ -151,11 +152,14 @@ h2 {
 
 .screenshot {
     text-align: center;
+    margin-top: 10px;
 }
 
 .screenshot img {
-    max-width: 100%;
-    height: auto;
+    max-width: 100%;   /* не даёт картинке выходить за пределы родителя */
+    height: auto;       /* сохраняет пропорции */
+    display: block;     /* убирает лишние отступы снизу */
+    margin: 0 auto;     /* центрирует, если картинка меньше */
     border: 1px solid #ddd;
     border-radius: 4px;
     padding: 5px;
