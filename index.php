@@ -272,12 +272,16 @@ if (empty($languages_from_db)) {
             <div class="subtask">
                 <h3>Корректировка структуры и проверка сохранённых данных</h3>
                 <div class="description">
-                    <p>Поле <code>gender</code> изменено (удалён вариант <code>'other'</code>). Затем выполнена выборка последних записей из таблицы <code>application</code> для проверки успешного сохранения данных.</p>
+                    <p>Выполнена выборка последних записей из таблицы <code>application</code> для проверки успешного сохранения данных.</p>
                 </div>
                 <div class="screenshot">
                     <img src="7.PNG" alt="ALTER и SELECT">
                     <p class="caption">Скриншот 7: Изменение структуры и просмотр записей</p>
                 </div>
+                <div class="description">
+                    <p>Для удобного просмотра всех сохранённых анкет создана отдельная страница: <a href="view.php" target="_blank">Просмотр сохранённых записей</a>.</p>
+                </div>
+
             </div>
         </section>
 
