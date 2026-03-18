@@ -185,6 +185,7 @@ if (empty($languages_from_db)) {
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Задание 3 - Анкета</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -271,7 +272,9 @@ if (empty($languages_from_db)) {
             </div>
         </form>
 
-        <!-- ===== ЭТАПЫ ВЫПОЛНЕНИЯ ЗАДАНИЯ (подготовительный раздел) ===== -->
+        <!-- ===== ЭТАПЫ ВЫПОЛНЕНИЯ ЗАДАНИЯ ===== -->
+
+        <!-- Раздел 1: Подготовка к выполнению работы -->
         <section class="task">
             <h2>Подготовка к выполнению работы</h2>
 
@@ -351,7 +354,7 @@ if (empty($languages_from_db)) {
             <div class="subtask">
                 <h3>Корректировка структуры и проверка сохранённых данных</h3>
                 <div class="description">
-                    <p> Затем выполнена выборка последних записей из таблицы <code>application</code> для проверки успешного сохранения данных. Для удобного просмотра всех сохранённых анкет создана отдельная страница: <a href="view.php" target="_blank">Просмотр сохранённых записей</a>.</p>
+                    <p>Затем выполнена выборка последних записей из таблицы <code>application</code> для проверки успешного сохранения данных. Для удобного просмотра всех сохранённых анкет создана отдельная страница: <a href="view.php" target="_blank">Просмотр сохранённых записей</a>.</p>
                 </div>
                 <div class="screenshot">
                     <img src="7.PNG" alt="ALTER и SELECT">
@@ -359,6 +362,8 @@ if (empty($languages_from_db)) {
                 </div>
             </div>
         </section>
+
+       
     </div>
 </body>
 </html>
