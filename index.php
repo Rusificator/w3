@@ -296,7 +296,7 @@ if (empty($languages_from_db)) {
                 <div class="description">
                     <p>Через SSH выполнен вход на сервер <code>192.168.199.8</code> под логином <code>u82457</code>.</p>
                 </div>
-                <div class="screenshot">
+                <div class="screenshot_img">
                     <img src="1.PNG" alt="SSH подключение">
                     <p class="caption">Скриншот 1: Подключение к серверу</p>
                 </div>
