@@ -299,7 +299,8 @@ if (empty($languages_from_db)) {
                 </ul>
             </div>
         <?php endif; ?>
-
+                </div>
+    <div class="container">
         <!-- Якорь для прокрутки к форме -->
         <div id="form-section"></div>
 
