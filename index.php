@@ -51,20 +51,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // --- Валидация ---
 
-    // ФИО: только буквы, пробелы, дефисы, длина ≤150
+    // ФИО: только буквы, пробелы, длина ≤150
     if (empty($form_data['full_name'])) {
         $errors['full_name'] = 'ФИО обязательно для заполнения.';
-    } elseif (!preg_match('/^[а-яА-Яa-zA-Z\s\-]+$/u', $form_data['full_name'])) {
-        $errors['full_name'] = 'ФИО может содержать только буквы, пробелы и дефисы.';
+    } elseif (!preg_match('/^[а-яА-Яa-zA-Z\s]+$/u', $form_data['full_name'])) {
+        $errors['full_name'] = 'ФИО должно содержать только буквы и пробелы.';
     } elseif (strlen($form_data['full_name']) > 150) {
         $errors['full_name'] = 'ФИО не должно превышать 150 символов.';
     }
 
-    // Телефон (необязательно строгая валидация, но можно проверить формат)
+    // Телефон: допустимые символы и длина от 6 до 12
     if (empty($form_data['phone'])) {
         $errors['phone'] = 'Телефон обязателен.';
     } elseif (!preg_match('/^[\d\s\-\+\(\)]+$/', $form_data['phone'])) {
         $errors['phone'] = 'Телефон содержит недопустимые символы.';
+    } elseif (strlen($form_data['phone']) < 6 || strlen($form_data['phone']) > 12) {
+        $errors['phone'] = 'Телефон должен содержать от 6 до 12 символов.';
     }
 
     // Email
@@ -81,6 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $date = DateTime::createFromFormat('Y-m-d', $form_data['birth_date']);
         if (!$date || $date->format('Y-m-d') !== $form_data['birth_date']) {
             $errors['birth_date'] = 'Некорректная дата. Используйте формат ГГГГ-ММ-ДД.';
+        } else {
+            $today = new DateTime('today');
+            if ($date > $today) {
+                $errors['birth_date'] = 'Дата рождения не может быть позже сегодняшнего дня.';
+            }
         }
     }
 
@@ -140,8 +147,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $application_id = $pdo->lastInsertId();
 
             // 2. Вставка в application_language для каждого выбранного языка
-            // Сначала получим ID языков из таблицы language (хотя можно было бы хранить и названия, но лучше ID)
-            // Для ускорения можно получить все языки один раз в виде ассоциативного массива
             $lang_map = [];
             $stmt = $pdo->query("SELECT id, name FROM language");
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -159,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->commit();
 
             $success_message = 'Данные успешно сохранены!';
-            // Очищаем данные формы для удобства (опционально)
+            // Очищаем данные формы для удобства
             $form_data = array_map(function() { return ''; }, $form_data);
             $form_data['languages'] = [];
             $form_data['contract_accepted'] = false;
@@ -171,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Получаем список языков для отображения в форме (из таблицы, но можно и из $allowed_languages)
+// Получаем список языков для отображения в форме
 $languages_from_db = [];
 $stmt = $pdo->query("SELECT name FROM language ORDER BY name");
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -189,8 +194,8 @@ if (empty($languages_from_db)) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-
+    <div class="container">
+        <h1>Анкета</h1>
 
         <!-- ========== Подготовительный раздел ========== -->
         <section class="preparation">
@@ -272,24 +277,14 @@ if (empty($languages_from_db)) {
             <div class="subtask">
                 <h3>Корректировка структуры и проверка сохранённых данных</h3>
                 <div class="description">
-                    <p>Выполнена выборка последних записей из таблицы <code>application</code> для проверки успешного сохранения данных.</p>
+                    <p>Затем выполнена выборка последних записей из таблицы <code>application</code> для проверки успешного сохранения данных. Для удобного просмотра всех сохранённых анкет создана отдельная страница: <a href="view.php" target="_blank">Просмотр сохранённых записей</a>.</p>
                 </div>
                 <div class="screenshot">
                     <img src="7.PNG" alt="ALTER и SELECT">
                     <p class="caption">Скриншот 7: Изменение структуры и просмотр записей</p>
                 </div>
-                <div class="description">
-                    <p>Для удобного просмотра всех сохранённых анкет создана отдельная страница: <a href="view.php" target="_blank">Просмотр сохранённых записей</a>.</p>
-                </div>
-
             </div>
         </section>
-
-
-
-
-    <div class="container">
-        <h1>Анкета</h1>
 
         <?php if ($success_message): ?>
             <div class="success"><?= htmlspecialchars($success_message) ?></div>
@@ -304,6 +299,9 @@ if (empty($languages_from_db)) {
                 </ul>
             </div>
         <?php endif; ?>
+
+        <!-- Якорь для прокрутки к форме -->
+        <div id="form-section"></div>
 
         <form method="post" action="">
             <div class="form-group">
@@ -335,7 +333,6 @@ if (empty($languages_from_db)) {
                 <div class="radio-group">
                     <label><input type="radio" name="gender" value="male" <?= $form_data['gender'] === 'male' ? 'checked' : '' ?> required> Мужской</label>
                     <label><input type="radio" name="gender" value="female" <?= $form_data['gender'] === 'female' ? 'checked' : '' ?>> Женский</label>
-                    
                 </div>
                 <?php if (isset($errors['gender'])): ?><span class="field-error"><?= $errors['gender'] ?></span><?php endif; ?>
             </div>
@@ -369,5 +366,17 @@ if (empty($languages_from_db)) {
             </div>
         </form>
     </div>
+
+    <!-- Скрипт для прокрутки к форме после отправки -->
+    <?php if ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var formSection = document.getElementById('form-section');
+            if (formSection) {
+                formSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    </script>
+    <?php endif; ?>
 </body>
 </html>
